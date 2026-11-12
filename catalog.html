@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — CINEMATE</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">CINEMATE</a>
+
+            <nav class="navigation">
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="watchlist.html">Посмотреть позже</a></li>
+                    <li><a href="contacts.html">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="catalog">
+            <div class="container">
+                <h1>Каталог фильмов и сериалов</h1>
+<p>Выбирай, что посмотреть сегодня.</p>
+
+<!-- Фильтрация и сортировка -->
+<div class="catalog-controls">
+
+    <div class="filter-group">
+        <label for="genre-filter">Жанр:</label>
+        <select id="genre-filter" name="genre">
+            <option value="all">Все жанры</option>
+            <option value="fantasy">Фантастика</option>
+            <option value="drama">Драма</option>
+            <option value="thriller">Триллер</option>
+            <option value="action">Боевик</option>
+            <option value="detective">Детектив</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="type-filter">Тип:</label>
+        <select id="type-filter" name="type">
+            <option value="all">Все</option>
+            <option value="movie">Фильмы</option>
+            <option value="series">Сериалы</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="sort-filter">Сортировка:</label>
+        <select id="sort-filter" name="sort">
+            <option value="default">По умолчанию</option>
+            <option value="newest">Сначала новые</option>
+            <option value="oldest">Сначала старые</option>
+            <option value="title">По названию</option>
+        </select>
+    </div>
+
+</div>
+
+<div class="movie-list">
+
+                    <article class="movie-card">
+                        <img src="images/movies/interstellar.jpg" alt="Постер фильма Интерстеллар">
+                        <h2>Интерстеллар</h2>
+                        <p>2014 · Фантастика</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/inception.jpg" alt="Постер фильма Начало">
+                        <h2>Начало</h2>
+                        <p>2010 · Фантастика, триллер</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/shawshank.jpg" alt="Постер фильма Побег из Шоушенка">
+                        <h2>Побег из Шоушенка</h2>
+                        <p>1994 · Драма</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/green-mile.jpg" alt="Постер фильма Зелёная миля">
+                        <h2>Зелёная миля</h2>
+                        <p>1999 · Драма, фэнтези</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/forrest-gump.jpg" alt="Постер фильма Форрест Гамп">
+                        <h2>Форрест Гамп</h2>
+                        <p>1994 · Драма, мелодрама</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/matrix.jpg" alt="Постер фильма Матрица">
+                        <h2>Матрица</h2>
+                        <p>1999 · Фантастика, боевик</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/dark-knight.jpg" alt="Постер фильма Тёмный рыцарь">
+                        <h2>Тёмный рыцарь</h2>
+                        <p>2008 · Боевик, драма</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/pulp-fiction.jpg" alt="Постер фильма Криминальное чтиво">
+                        <h2>Криминальное чтиво</h2>
+                        <p>1994 · Криминал, триллер</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/fight-club.jpg" alt="Постер фильма Бойцовский клуб">
+                        <h2>Бойцовский клуб</h2>
+                        <p>1999 · Драма, триллер</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/breaking-bad.jpg" alt="Постер сериала Во все тяжкие">
+                        <h2>Во все тяжкие</h2>
+                        <p>2008 · Сериал, криминал</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/sherlock.jpg" alt="Постер сериала Шерлок">
+                        <h2>Шерлок</h2>
+                        <p>2010 · Сериал, детектив</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                    <article class="movie-card">
+                        <img src="images/movies/stranger-things.jpg" alt="Постер сериала Очень странные дела">
+                        <h2>Очень странные дела</h2>
+                        <p>2016 · Сериал, фантастика</p>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 CINEMATE. Все права защищены.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

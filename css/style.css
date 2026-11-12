@@ -1,0 +1,521 @@
+
+/* =================================
+   1. Основные настройки
+================================= */
+
+:root {
+    --color-background: #F8F8F6;
+    --color-white: #FFFFFF;
+    --color-text: #252525;
+    --color-secondary: #777777;
+    --color-accent: #A67C52;
+    --color-border: #EAE8E3;
+
+    --container-width: 1200px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 90%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+
+/* =================================
+   2. Шапка сайта
+================================= */
+
+.header {
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-border);
+    padding: 20px 0;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-decoration: none;
+}
+
+.logo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border-radius: 6px;
+    font-size: 21px;
+    letter-spacing: 0;
+}
+.navigation ul {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.navigation a {
+    font-size: 14px;
+    color: var(--color-secondary);
+    transition: color 0.3s;
+}
+
+.navigation a:hover {
+    color: var(--color-accent);
+}
+
+
+/* =================================
+   3. Приветственный блок
+================================= */
+
+.hero {
+    padding: 100px 0;
+    text-align: center;
+    background-color: #F0EEE9;
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: var(--color-secondary);
+    margin-bottom: 30px;
+}
+
+.button {
+    display: inline-block;
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    padding: 12px 28px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #86613E;
+}
+
+
+/* =================================
+   4. Популярные фильмы
+================================= */
+
+.popular {
+    padding: 70px 0;
+}
+
+.popular h2 {
+    font-size: 30px;
+    margin-bottom: 35px;
+}
+
+.movie-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.movie-card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    padding-bottom: 20px;
+    transition: transform 0.3s;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.movie-card img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    display: block;
+}
+
+.movie-card h3 {
+    font-size: 20px;
+    margin: 18px 18px 5px;
+}
+
+.movie-card p {
+    color: var(--color-secondary);
+    font-size: 14px;
+    margin: 0 18px 12px;
+}
+
+.movie-card a {
+    display: inline-block;
+    color: var(--color-accent);
+    font-weight: bold;
+    margin-left: 18px;
+}
+
+
+/* =================================
+   5. Подвал сайта
+================================= */
+
+.footer {
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-border);
+    padding: 25px 0;
+    text-align: center;
+}
+
+.footer p {
+    color: var(--color-secondary);
+    font-size: 14px;
+}
+
+
+/* =================================
+   6. Адаптация для мобильных устройств
+================================= */
+
+@media (max-width: 768px) {
+
+    .header .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .navigation ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .hero {
+        padding: 65px 0;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .movie-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .movie-card img {
+        height: 260px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .movie-list {
+        grid-template-columns: 1fr;
+    }
+
+    .movie-card img {
+        height: 350px;
+    }
+
+    .hero h1 {
+        font-size: 26px;
+    }
+}
+
+/* =================================
+   7. Каталог фильмов
+================================= */
+
+.catalog,
+.watchlist,
+.contacts,
+.movie-details {
+    padding: 60px 0;
+}
+
+.catalog h1,
+.watchlist h1,
+.contacts h1,
+.movie-details h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.catalog > .container > p,
+.watchlist > .container > p,
+.contacts > .container > p {
+    color: var(--color-secondary);
+    margin-bottom: 35px;
+}
+
+/* =================================
+   8. Страница отдельного фильма
+================================= */
+
+.movie-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    margin: 30px 0;
+}
+
+.movie-info > img {
+    width: 320px;
+    max-height: 480px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.movie-description {
+    flex: 1;
+}
+
+.movie-description p {
+    margin-bottom: 12px;
+}
+
+.movie-description h2 {
+    margin: 25px 0 12px;
+}
+
+.movie-description .button {
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.movie-details > .container > a {
+    color: var(--color-accent);
+}
+
+/* =================================
+   9. Список «Посмотреть позже»
+================================= */
+
+.watchlist-note {
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+/* =================================
+   10. Форма обратной связи
+================================= */
+
+.contact-form {
+    max-width: 650px;
+    margin-top: 35px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 15px;
+    background-color: var(--color-white);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+.contact-form button {
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* =================================
+   11. Адаптация дополнительных страниц
+================================= */
+
+@media (max-width: 768px) {
+    .movie-info {
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .movie-info > img {
+        width: 100%;
+        max-width: 320px;
+        max-height: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .catalog h1,
+    .watchlist h1,
+    .contacts h1,
+    .movie-details h1 {
+        font-size: 26px;
+    }
+
+    .catalog,
+    .watchlist,
+    .contacts,
+    .movie-details {
+        padding: 40px 0;
+    }
+    .contact-info {
+    grid-template-columns: 1fr;
+}
+    
+}
+
+/* =================================
+   12. Элементы управления каталогом
+================================= */
+
+.catalog-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 30px 0;
+    padding: 20px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--color-text);
+}
+
+.filter-group select {
+    min-width: 170px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* =================================
+   13. Кнопка удаления из списка
+================================= */
+
+.remove-button {
+    display: block;
+    margin: 12px 18px 0;
+    padding: 9px 14px;
+    color: var(--color-secondary);
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.remove-button:hover {
+    color: var(--color-white);
+    background-color: #A65C5C;
+    border-color: #A65C5C;
+}
+
+.remove-button:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+/* =================================
+   14. Контактная информация
+================================= */
+
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.contact-item {
+    padding: 20px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+}
+
+.contact-item h2 {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.contact-item p {
+    color: var(--color-secondary);
+}
+
+.contact-slogan {
+    grid-column: 1 / -1;
+    padding: 20px;
+    background-color: #F0EEE9;
+    border-radius: 8px;
+    text-align: center;
+    font-style: italic;
+}
