@@ -26,52 +26,28 @@
     </header>
 
     <main>
-        <section class="watchlist">
-            <div class="container">
+        <section class="watchlist"> 
+           <div class="container">
 
-                <h1>Посмотреть позже</h1>
+    <h1>Посмотреть позже</h1>
 
-                <p>
-                    Здесь собраны фильмы и сериалы,
-                    которые ты планируешь посмотреть.
-                </p>
+    <p>
+        Здесь собраны фильмы и сериалы,
+        которые ты планируешь посмотреть.
+    </p>
 
-                <div class="movie-list">
+    <!-- Контейнер для сохранённых фильмов -->
+    <div class="movie-list" id="watchlist-container">
+    </div>
 
-                    <article class="movie-card">
-                        <img
-                            src="images/movies/interstellar.jpg"
-                            alt="Постер фильма Интерстеллар"
-                        >
-                        <h2>Интерстеллар</h2>
-                        <p>2014 · Фантастика</p>
-                        <a href="movie.html">Подробнее</a>
-                        <button type="button" class="remove-button">
-    Убрать из списка
-</button>
-                    </article>
+    <!-- Сообщение для пустого списка -->
+    <p class="watchlist-note" id="watchlist-empty" hidden>
+        Пока список пуст. Добавь интересные фильмы,
+        чтобы посмотреть их позже!
+    </p>
 
-                    <article class="movie-card">
-                        <img
-                            src="images/movies/inception.jpg"
-                            alt="Постер фильма Начало"
-                        >
-                        <h2>Начало</h2>
-                        <p>2010 · Фантастика, триллер</p>
-                        <a href="movie.html">Подробнее</a>
-                        <button type="button" class="remove-button">
-    Убрать из списка
-</button>
-                    </article>
-
-                </div>
-
-                <p class="watchlist-note">
-                    В дальнейшем список будет формироваться
-                    автоматически после добавления фильмов пользователем.
-                </p>
-
-            </div>
+</div>
+           
         </section>
     </main>
 

@@ -113,3 +113,93 @@ if (searchInput && genreFilter && typeFilter && sortFilter && movieList) {
     // Обновляем каталог при открытии страницы
     updateCatalog();
 }
+// Работа со списком «Посмотреть позже»
+const WATCHLIST_KEY = "cinemateWatchlist";
+
+// Получаем сохранённые фильмы
+function getSavedMovies() {
+    try {
+        const movies = JSON.parse(
+            localStorage.getItem(WATCHLIST_KEY) || "[]"
+        );
+
+        return Array.isArray(movies) ? movies : [];
+
+    } catch (error) {
+        console.error("Ошибка чтения списка:", error);
+        return [];
+    }
+}
+
+// Обновляем состояние кнопок
+function updateWatchlistButtons() {
+
+    const savedMovies = getSavedMovies();
+
+    document.querySelectorAll(".movie-card").forEach(card => {
+
+        const button = card.querySelector(".add-to-watchlist");
+
+        if (!button) return;
+
+        const movieId = card.dataset.movieId;
+        const isSaved = savedMovies.some(
+            movie => movie.id === movieId
+        );
+
+        button.textContent = isSaved
+            ? "Уже в списке"
+            : "Добавить в список";
+
+        button.disabled = isSaved;
+    });
+}
+
+// Обрабатываем нажатия на кнопки добавления
+document.querySelectorAll(".movie-card").forEach(card => {
+
+    const button = card.querySelector(".add-to-watchlist");
+
+    if (!button) return;
+
+    button.addEventListener("click", function () {
+
+        const savedMovies = getSavedMovies();
+
+        const movie = {
+            id: card.dataset.movieId,
+            title: card.querySelector("h2").textContent.trim(),
+            year: card.dataset.year,
+            genre: card.querySelector("p").textContent
+                .split("·").slice(1).join("·").trim(),
+            image: card.querySelector("img").getAttribute("src")
+        };
+
+        // Проверяем, не добавлен ли фильм ранее
+        if (savedMovies.some(item => item.id === movie.id)) {
+            button.textContent = "Уже в списке";
+            button.disabled = true;
+            return;
+        }
+
+        // Добавляем фильм в список
+        savedMovies.push(movie);
+
+        try {
+            localStorage.setItem(
+                WATCHLIST_KEY,
+                JSON.stringify(savedMovies)
+            );
+
+            button.textContent = "Добавлено в список";
+            button.disabled = true;
+
+        } catch (error) {
+            console.error("Не удалось сохранить фильм:", error);
+            button.textContent = "Ошибка сохранения";
+        }
+    });
+});
+
+// Проверяем состояние кнопок при открытии каталога
+updateWatchlistButtons();
