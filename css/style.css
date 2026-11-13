@@ -545,3 +545,68 @@ a {
 .movie-card.is-hidden {
     display: none;
 }
+/* Форма пользовательской оценки */
+.rating-form {
+    margin-top: 24px;
+}
+
+/* Заголовок формы */
+.rating-form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 16px;
+}
+
+.rating-form legend {
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Варианты оценки */
+.rating-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Скрываем стандартные переключатели */
+.rating-options input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+/* Оформляем звёзды */
+.rating-options label {
+    cursor: pointer;
+    font-size: 20px;
+    letter-spacing: 2px;
+    padding: 8px;
+    border-radius: 6px;
+    color: #999999;
+    transition: color 0.2s ease;
+}
+
+/* Наведение */
+.rating-options label:hover {
+    color: #d5a43a;
+}
+
+/* Выбранная оценка */
+.rating-options input:checked + label {
+    color: #d5a43a;
+}
+
+/* Клавиатурный фокус */
+.rating-options input:focus-visible + label {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+/* Сообщение после оценки */
+#rating-message {
+    margin-top: 12px;
+    font-size: 14px;
+}
