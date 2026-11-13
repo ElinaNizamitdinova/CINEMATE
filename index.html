@@ -95,44 +95,82 @@
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-<!-- Карточка фильма № 4 -->
-<article class="movie-card">
-    <img src="images/movies/green-mile.jpg"
-         alt="Постер фильма Зелёная миля">
+                    <!-- Карточка фильма № 4 -->
+                    <article class="movie-card">
+                        <img src="images/movies/green-mile.jpg"
+                            alt="Постер фильма Зелёная миля">
 
-    <h3>Зелёная миля</h3>
-    <p>1999 · Драма, фэнтези</p>
+                        <h3>Зелёная миля</h3>
+                        <p>1999 · Драма, фэнтези</p>
 
-    <a href="movie.html">Подробнее</a>
-</article>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
 
-<!-- Карточка фильма № 5 -->
-<article class="movie-card">
-    <img src="images/movies/forrest-gump.jpg"
-         alt="Постер фильма Форрест Гамп">
+                    <!-- Карточка фильма № 5 -->
+                    <article class="movie-card">
+                        <img src="images/movies/forrest-gump.jpg"
+                            alt="Постер фильма Форрест Гамп">
 
-    <h3>Форрест Гамп</h3>
-    <p>1994 · Драма, мелодрама</p>
+                        <h3>Форрест Гамп</h3>
+                        <p>1994 · Драма, мелодрама</p>
 
-    <a href="movie.html">Подробнее</a>
-</article>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
 
-<!-- Карточка фильма № 6 -->
-<article class="movie-card">
-    <img src="images/movies/matrix.jpg"
-         alt="Постер фильма Матрица">
+                    <!-- Карточка фильма № 6 -->
+                    <article class="movie-card">
+                        <img src="images/movies/matrix.jpg"
+                            alt="Постер фильма Матрица">
 
-    <h3>Матрица</h3>
-    <p>1999 · Фантастика, боевик</p>
+                        <h3>Матрица</h3>
+                        <p>1999 · Фантастика, боевик</p>
 
-    <a href="movie.html">Подробнее</a>
-</article>
+                        <a href="movie.html">Подробнее</a>
+                    </article>
 
 
-                </div>
+                                    </div>
 
-            </div>
-        </section>
+                                </div>
+                            </section>
+                            <!-- Динамическая подборка сериалов из TVmaze API -->
+                        <section class="api-shows">
+                            <div class="container">
+
+                                <h2>Сериалы из открытой базы данных</h2>
+
+                                <!-- Сообщение о загрузке -->
+                                <p id="api-loading" role="status">
+                                    Загружаем подборку сериалов...
+                                </p>
+
+                                <!-- Контейнер для карточек из API -->
+                                <div
+                                    class="movie-list"
+                                    id="api-show-list"
+                                    aria-live="polite"
+                                    aria-busy="true"
+                                >
+                                </div>
+
+                                <!-- Сообщение об ошибке -->
+                                <p id="api-error" role="alert" hidden>
+                                    Не удалось загрузить сериалы.
+                                    Попробуйте обновить страницу позже.
+                                </p>
+
+                                <!-- Источник данных -->
+                                <p class="api-credit">
+                                    Данные о сериалах предоставлены
+                                    <a href="https://www.tvmaze.com/"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                        TVmaze
+                                    </a>.
+                                </p>
+
+                            </div>
+                        </section>
 
     </main>
 

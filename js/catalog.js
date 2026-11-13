@@ -203,3 +203,11 @@ document.querySelectorAll(".movie-card").forEach(card => {
 
 // Проверяем состояние кнопок при открытии каталога
 updateWatchlistButtons();
+// Предотвращаем стандартную отправку формы фильтрации
+const catalogFilterForm = document.querySelector("#catalog-filter-form");
+
+if (catalogFilterForm) {
+    catalogFilterForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+    });
+}
