@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог — CINEMATE</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/catalog.js" defer></script>
 </head>
 <body>
 
@@ -32,16 +33,31 @@
 
 <!-- Фильтрация и сортировка -->
 <div class="catalog-controls">
+    <div class="filter-group">
+
+    <label for="catalog-search">Поиск фильма:</label>
+
+    <input
+        type="search"
+        id="catalog-search"
+        name="search"
+        placeholder="Введите название фильма..."
+        autocomplete="off"
+    >
+
+</div>
 
     <div class="filter-group">
         <label for="genre-filter">Жанр:</label>
         <select id="genre-filter" name="genre">
             <option value="all">Все жанры</option>
-            <option value="fantasy">Фантастика</option>
+            <option value="sci-fi">Фантастика</option>
+            <option value="fantasy">Фэнтези</option>
             <option value="drama">Драма</option>
             <option value="thriller">Триллер</option>
             <option value="action">Боевик</option>
             <option value="detective">Детектив</option>
+            <option value="crime">Криминал</option>
         </select>
     </div>
 
@@ -68,84 +84,120 @@
 
 <div class="movie-list">
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="sci-fi"
+                    data-type="movie"
+                    data-year="2014">
                         <img src="images/movies/interstellar.jpg" alt="Постер фильма Интерстеллар">
                         <h2>Интерстеллар</h2>
                         <p>2014 · Фантастика</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="sci-fi thriller"
+                    data-type="movie"
+                    data-year="2010">
                         <img src="images/movies/inception.jpg" alt="Постер фильма Начало">
                         <h2>Начало</h2>
                         <p>2010 · Фантастика, триллер</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="drama"
+                    data-type="movie"
+                    data-year="1994">
                         <img src="images/movies/shawshank.jpg" alt="Постер фильма Побег из Шоушенка">
                         <h2>Побег из Шоушенка</h2>
                         <p>1994 · Драма</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="drama fantasy"
+                    data-type="movie"
+                    data-year="1999">
                         <img src="images/movies/green-mile.jpg" alt="Постер фильма Зелёная миля">
                         <h2>Зелёная миля</h2>
                         <p>1999 · Драма, фэнтези</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="drama"
+                    data-type="movie"
+                    data-year="1994">
                         <img src="images/movies/forrest-gump.jpg" alt="Постер фильма Форрест Гамп">
                         <h2>Форрест Гамп</h2>
                         <p>1994 · Драма, мелодрама</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="sci-fi action"
+                    data-type="movie"
+                    data-year="1999">
                         <img src="images/movies/matrix.jpg" alt="Постер фильма Матрица">
                         <h2>Матрица</h2>
                         <p>1999 · Фантастика, боевик</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="action thriller crime"
+                    data-type="movie"
+                    data-year="2008">
                         <img src="images/movies/dark-knight.jpg" alt="Постер фильма Тёмный рыцарь">
                         <h2>Тёмный рыцарь</h2>
                         <p>2008 · Боевик, драма</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="crime drama"
+                    data-type="movie"
+                    data-year="1994">
                         <img src="images/movies/pulp-fiction.jpg" alt="Постер фильма Криминальное чтиво">
                         <h2>Криминальное чтиво</h2>
-                        <p>1994 · Криминал, триллер</p>
+                        <p>1994 · Криминал, триллер, драма</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="drama thriller"
+                    data-type="movie"
+                    data-year="1999">
                         <img src="images/movies/fight-club.jpg" alt="Постер фильма Бойцовский клуб">
                         <h2>Бойцовский клуб</h2>
                         <p>1999 · Драма, триллер</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="drama crime"
+                    data-type="series"
+                    data-year="2008">
                         <img src="images/movies/breaking-bad.jpg" alt="Постер сериала Во все тяжкие">
                         <h2>Во все тяжкие</h2>
                         <p>2008 · Сериал, криминал</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="detective crime drama"
+                    data-type="series"
+                    data-year="2010">
                         <img src="images/movies/sherlock.jpg" alt="Постер сериала Шерлок">
                         <h2>Шерлок</h2>
                         <p>2010 · Сериал, детектив</p>
                         <a href="movie.html">Подробнее</a>
                     </article>
 
-                    <article class="movie-card">
+                    <article class="movie-card"
+                    data-genre="sci-fi thriller"
+                    data-type="series"
+                    data-year="2016">
                         <img src="images/movies/stranger-things.jpg" alt="Постер сериала Очень странные дела">
                         <h2>Очень странные дела</h2>
                         <p>2016 · Сериал, фантастика</p>
