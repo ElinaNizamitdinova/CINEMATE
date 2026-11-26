@@ -88,6 +88,10 @@ class LoginRequest(BaseModel):
 class WatchlistRequest(BaseModel):
     item_id: int = Field(gt=0)
 
+class RatingRequest(BaseModel):
+    item_id: int = Field(gt=0)
+    score: int = Field(ge=1, le=5)
+
 # Запуск базы данных вместе с сервером
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -217,6 +221,69 @@ def remove_from_watchlist(
         "message": "Удалено из списка «Посмотреть позже»",
         "item_id": item_id
     }
+
+@app.post("/api/ratings")
+def add_rating(
+    request: RatingRequest,
+    current_user = Depends(get_current_user)
+):
+    with get_connection() as conn:
+        item = conn.execute(
+            "SELECT id FROM catalog_items WHERE id = ?",
+            (request.item_id,)
+        ).fetchone()
+
+        if item is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Фильм или сериал не найден"
+            )
+
+        existing = conn.execute(
+            "SELECT id FROM ratings WHERE user_id = ? AND item_id = ?",
+            (current_user["id"], request.item_id)
+        ).fetchone()
+
+        if existing:
+            conn.execute(
+                "UPDATE ratings SET score = ?, created_at = CURRENT_TIMESTAMP "
+                "WHERE user_id = ? AND item_id = ?",
+                (request.score, current_user["id"], request.item_id)
+            )
+        else:
+            conn.execute(
+                "INSERT INTO ratings (user_id, item_id, score) VALUES (?, ?, ?)",
+                (current_user["id"], request.item_id, request.score)
+            )
+
+    return {
+        "message": "Оценка сохранена",
+        "item_id": request.item_id,
+        "score": request.score
+    }
+
+@app.get("/api/ratings")
+def get_ratings(current_user = Depends(get_current_user)):
+    with get_connection() as conn:
+        ratings = conn.execute(
+            """
+            SELECT
+                catalog_items.id,
+                catalog_items.title,
+                catalog_items.item_type,
+                catalog_items.release_year,
+                ratings.score,
+                ratings.created_at
+            FROM ratings
+            JOIN catalog_items
+                ON ratings.item_id = catalog_items.id
+            WHERE ratings.user_id = ?
+            ORDER BY ratings.created_at DESC
+            """,
+            (current_user["id"],)
+        ).fetchall()
+
+    return [dict(rating) for rating in ratings]    
 
 # Проверка работоспособности сервера
 @app.get("/api/health")
