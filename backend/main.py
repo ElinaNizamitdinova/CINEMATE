@@ -92,6 +92,10 @@ class RatingRequest(BaseModel):
     item_id: int = Field(gt=0)
     score: int = Field(ge=1, le=5)
 
+class CollectionRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=50)
+    description: str = Field(default="", max_length=300)
+
 # Запуск базы данных вместе с сервером
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -438,3 +442,205 @@ def login_user(user: LoginRequest):
 
     finally:
         connection.close()
+
+
+@app.post("/api/collections", status_code=201)
+def create_collection(
+    request: CollectionRequest,
+    current_user=Depends(get_current_user)
+):
+    with get_connection() as conn:
+        cursor = conn.execute(
+            """
+            INSERT INTO collections (user_id, name, description)
+            VALUES (?, ?, ?)
+            """,
+            (
+                current_user["id"],
+                request.name,
+                request.description
+            )
+        )
+
+    return {
+        "message": "Подборка успешно создана",
+        "collection_id": cursor.lastrowid,
+        "name": request.name,
+        "description": request.description
+    }
+
+
+@app.get("/api/collections")
+def get_collections(current_user=Depends(get_current_user)):
+    with get_connection() as conn:
+        collections = conn.execute(
+            """
+            SELECT
+                collections.id,
+                collections.name,
+                collections.description,
+                collections.created_at,
+                COUNT(collection_items.item_id) AS items_count
+            FROM collections
+            LEFT JOIN collection_items
+                ON collections.id = collection_items.collection_id
+            WHERE collections.user_id = ?
+            GROUP BY collections.id
+            ORDER BY collections.created_at DESC
+            """,
+            (current_user["id"],)
+        ).fetchall()
+
+    return [dict(collection) for collection in collections]
+
+
+@app.get("/api/collections/{collection_id}")
+def get_collection(
+    collection_id: int,
+    current_user=Depends(get_current_user)
+):
+    with get_connection() as conn:
+        collection = conn.execute(
+            """
+            SELECT id, name, description, created_at
+            FROM collections
+            WHERE id = ? AND user_id = ?
+            """,
+            (collection_id, current_user["id"])
+        ).fetchone()
+
+        if collection is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Подборка не найдена"
+            )
+
+        items = conn.execute(
+            """
+            SELECT
+                catalog_items.id,
+                catalog_items.title,
+                catalog_items.item_type,
+                catalog_items.release_year,
+                catalog_items.genres,
+                catalog_items.description,
+                catalog_items.poster_url
+            FROM collection_items
+            JOIN catalog_items
+                ON collection_items.item_id = catalog_items.id
+            WHERE collection_items.collection_id = ?
+            ORDER BY catalog_items.title
+            """,
+            (collection_id,)
+        ).fetchall()
+
+    return {
+        "id": collection["id"],
+        "name": collection["name"],
+        "description": collection["description"],
+        "created_at": collection["created_at"],
+        "items": [dict(item) for item in items]
+    }
+
+@app.post("/api/collections/{collection_id}/items", status_code=201)
+def add_item_to_collection(
+    collection_id: int,
+    request: WatchlistRequest,
+    current_user=Depends(get_current_user)
+):
+    with get_connection() as conn:
+        collection = conn.execute(
+            """
+            SELECT id FROM collections
+            WHERE id = ? AND user_id = ?
+            """,
+            (collection_id, current_user["id"])
+        ).fetchone()
+
+        if collection is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Подборка не найдена"
+            )
+
+        item = conn.execute(
+            "SELECT id FROM catalog_items WHERE id = ?",
+            (request.item_id,)
+        ).fetchone()
+
+        if item is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Фильм или сериал не найден"
+            )
+
+        existing = conn.execute(
+            """
+            SELECT collection_id
+            FROM collection_items
+            WHERE collection_id = ? AND item_id = ?
+            """,
+            (collection_id, request.item_id)
+        ).fetchone()
+
+        if existing:
+            raise HTTPException(
+                status_code=409,
+                detail="Эта запись уже есть в подборке"
+            )
+
+        conn.execute(
+            """
+            INSERT INTO collection_items (collection_id, item_id)
+            VALUES (?, ?)
+            """,
+            (collection_id, request.item_id)
+        )
+
+    return {
+        "message": "Фильм или сериал добавлен в подборку",
+        "collection_id": collection_id,
+        "item_id": request.item_id
+    }
+
+
+@app.delete("/api/collections/{collection_id}/items/{item_id}")
+def remove_item_from_collection(
+    collection_id: int,
+    item_id: int,
+    current_user=Depends(get_current_user)
+):
+    with get_connection() as conn:
+        collection = conn.execute(
+            """
+            SELECT id FROM collections
+            WHERE id = ? AND user_id = ?
+            """,
+            (collection_id, current_user["id"])
+        ).fetchone()
+
+        if collection is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Подборка не найдена"
+            )
+
+        result = conn.execute(
+            """
+            DELETE FROM collection_items
+            WHERE collection_id = ? AND item_id = ?
+            """,
+            (collection_id, item_id)
+        )
+
+        if result.rowcount == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="Запись не найдена в подборке"
+            )
+
+    return {
+        "message": "Запись удалена из подборки",
+        "collection_id": collection_id,
+        "item_id": item_id
+    }

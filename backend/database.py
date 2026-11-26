@@ -92,9 +92,13 @@ def init_db():
             -- Таблица тематических подборок
             CREATE TABLE IF NOT EXISTS collections (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
                 name TEXT NOT NULL,
                 description TEXT,
-                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (user_id)
+                REFERENCES users(id) ON DELETE CASCADE
             );
 
 
@@ -113,6 +117,21 @@ def init_db():
             );
 
         """)
+
+        # Проверяем, существует ли столбец user_id в таблице collections
+        columns = connection.execute(
+            "PRAGMA table_info(collections)"
+        ).fetchall()
+
+        # Если столбца нет, добавляем его
+        if not any(column["name"] == "user_id" for column in columns):
+            connection.execute(
+                """
+                ALTER TABLE collections
+                ADD COLUMN user_id INTEGER
+                REFERENCES users(id) ON DELETE CASCADE
+                """
+            )
 
         connection.commit()
 
