@@ -85,6 +85,9 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+class WatchlistRequest(BaseModel):
+    item_id: int = Field(gt=0)
+
 # Запуск базы данных вместе с сервером
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -130,6 +133,90 @@ def read_users_me(current_user = Depends(get_current_user)):
         "email": current_user["email"]
     }
 
+
+@app.post("/api/watchlist", status_code=201)
+def add_to_watchlist(
+    request: WatchlistRequest,
+    current_user = Depends(get_current_user)
+):
+    with get_connection() as conn:
+        item = conn.execute(
+            "SELECT id FROM catalog_items WHERE id = ?",
+            (request.item_id,)
+        ).fetchone()
+
+        if item is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Фильм или сериал не найден"
+            )
+
+        existing = conn.execute(
+            "SELECT id FROM watchlist WHERE user_id = ? AND item_id = ?",
+            (current_user["id"], request.item_id)
+        ).fetchone()
+
+        if existing:
+            raise HTTPException(
+                status_code=409,
+                detail="Эта запись уже есть в списке"
+            )
+
+        conn.execute(
+            "INSERT INTO watchlist (user_id, item_id) VALUES (?, ?)",
+            (current_user["id"], request.item_id)
+        )
+
+    return {
+        "message": "Добавлено в список «Посмотреть позже»",
+        "item_id": request.item_id
+    }
+
+@app.get("/api/watchlist")
+def get_watchlist(current_user = Depends(get_current_user)):
+    with get_connection() as conn:
+        items = conn.execute(
+            """
+            SELECT
+                catalog_items.id,
+                catalog_items.title,
+                catalog_items.item_type,
+                catalog_items.release_year,
+                catalog_items.genres,
+                catalog_items.poster_url,
+                watchlist.added_at
+            FROM watchlist
+            JOIN catalog_items
+                ON watchlist.item_id = catalog_items.id
+            WHERE watchlist.user_id = ?
+            ORDER BY watchlist.added_at DESC
+            """,
+            (current_user["id"],)
+        ).fetchall()
+
+    return [dict(item) for item in items]
+
+@app.delete("/api/watchlist/{item_id}")
+def remove_from_watchlist(
+    item_id: int,
+    current_user = Depends(get_current_user)
+):
+    with get_connection() as conn:
+        result = conn.execute(
+            "DELETE FROM watchlist WHERE user_id = ? AND item_id = ?",
+            (current_user["id"], item_id)
+        )
+
+        if result.rowcount == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="Запись не найдена в вашем списке"
+            )
+
+    return {
+        "message": "Удалено из списка «Посмотреть позже»",
+        "item_id": item_id
+    }
 
 # Проверка работоспособности сервера
 @app.get("/api/health")
