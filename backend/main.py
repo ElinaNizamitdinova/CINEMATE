@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr, Field
 from pwdlib import PasswordHash
@@ -17,9 +18,11 @@ from database import get_connection, init_db
 
 # Настройки безопасности
 password_hash = PasswordHash.recommended()
+bearer_scheme = HTTPBearer()
 
 # Загружаем переменные из файла .env
 load_dotenv(Path(__file__).resolve().parent / ".env")
+
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -39,6 +42,39 @@ def create_access_token(user_id: int):
     }
 
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)
+):
+    token = credentials.credentials
+
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+        user_id = int(payload.get("sub"))
+    except (jwt.InvalidTokenError, ValueError, TypeError):
+        raise HTTPException(
+            status_code=401,
+            detail="Недействительный или истёкший токен",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
+    with get_connection() as conn:
+        user = conn.execute(
+            "SELECT id, username, email FROM users WHERE id = ?",
+            (user_id,)
+        ).fetchone()
+
+    if user is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Пользователь не найден"
+        )
+
+    return user
 
 class RegistrationRequest(BaseModel):
     username: str = Field(min_length=3, max_length=30)
@@ -83,6 +119,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+
+@app.get("/api/me")
+def read_users_me(current_user = Depends(get_current_user)):
+    return {
+        "id": current_user["id"],
+        "username": current_user["username"],
+        "email": current_user["email"]
+    }
 
 
 # Проверка работоспособности сервера
