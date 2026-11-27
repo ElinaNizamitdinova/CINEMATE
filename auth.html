@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход и регистрация — CINEMATE</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/backend.js" defer></script>
+    <script src="js/auth.js" defer></script>
+</head>
+<body>
+
+    
+<header>
+    <a href="index.html" class="logo">CINEMATE</a>
+
+    <nav class="navigation">
+        <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="watchlist.html">Посмотреть позже</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+            <li><a href="#" id="logout-link">Выйти из аккаунта</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+    <main class="auth-container">
+        <h1>Добро пожаловать в CINEMATE</h1>
+
+        <section class="auth-section">
+            <h2>Регистрация</h2>
+
+            <form id="register-form">
+                <label for="register-username">Имя пользователя</label>
+                <input
+                    type="text"
+                    id="register-username"
+                    minlength="3"
+                    maxlength="30"
+                    required
+                >
+
+                <label for="register-email">Email</label>
+                <input
+                    type="email"
+                    id="register-email"
+                    required
+                >
+
+                <label for="register-password">Пароль</label>
+                <input
+                    type="password"
+                    id="register-password"
+                    minlength="8"
+                    maxlength="128"
+                    required
+                >
+
+                <button type="submit">Зарегистрироваться</button>
+                <p id="register-message"></p>
+            </form>
+        </section>
+
+        <section class="auth-section">
+            <h2>Вход</h2>
+
+            <form id="login-form">
+                <label for="login-email">Email</label>
+                <input
+                    type="email"
+                    id="login-email"
+                    required
+                >
+
+                <label for="login-password">Пароль</label>
+                <input
+                    type="password"
+                    id="login-password"
+                    required
+                >
+
+                <button type="submit">Войти</button>
+                <p id="login-message"></p>
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>

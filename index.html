@@ -8,6 +8,8 @@
     <title>CINEMATE — мир кино</title>
 
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/backend.js" defer></script>
+    <script src="js/home.js" defer></script>
     <script src="js/api.js" defer></script>
 </head>
 
@@ -29,6 +31,7 @@
                     <li><a href="catalog.html">Каталог</a></li>
                     <li><a href="watchlist.html">Посмотреть позже</a></li>
                     <li><a href="contacts.html">Контакты</a></li>
+                    <li><a href="auth.html">Войти / Регистрация</a></li>
                 </ul>
             </nav>
 
@@ -54,85 +57,27 @@
             </div>
         </section>
 
-        <!-- Популярные фильмы -->
+        
+        <!-- Популярные фильмы из собственной базы данных -->
         <section class="popular">
             <div class="container">
 
-                <h2>Популярные фильмы</h2>
+                <h2>Популярные фильмы и сериалы</h2>
 
-                <div class="movie-list">
+                <p id="home-catalog-message" role="status">
+                    Загружаем каталог...
+                </p>
 
-                    <!-- Карточка фильма № 1 -->
-                    <article class="movie-card">
-                        <img src="images/movies/interstellar.jpg"
-                             alt="Постер фильма Интерстеллар">
+                <div class="movie-list" id="home-movie-list">
+                </div>
 
-                        <h3>Интерстеллар</h3>
-                        <p>2014 · Фантастика</p>
+                <a href="catalog.html" class="button">
+                    Смотреть весь каталог
+                </a>
 
-                        <a href="movie.html">Подробнее</a>
-                    </article>
+            </div>
+        </section>
 
-                    <!-- Карточка фильма № 2 -->
-                    <article class="movie-card">
-                        <img src="images/movies/inception.jpg"
-                             alt="Постер фильма Начало">
-
-                        <h3>Начало</h3>
-                        <p>2010 · Фантастика, триллер</p>
-
-                        <a href="movie.html">Подробнее</a>
-                    </article>
-
-                    <!-- Карточка фильма № 3 -->
-                    <article class="movie-card">
-                        <img src="images/movies/shawshank.jpg"
-                             alt="Постер фильма Побег из Шоушенка">
-
-                        <h3>Побег из Шоушенка</h3>
-                        <p>1994 · Драма</p>
-
-                        <a href="movie.html">Подробнее</a>
-                    </article>
-
-                    <!-- Карточка фильма № 4 -->
-                    <article class="movie-card">
-                        <img src="images/movies/green-mile.jpg"
-                            alt="Постер фильма Зелёная миля">
-
-                        <h3>Зелёная миля</h3>
-                        <p>1999 · Драма, фэнтези</p>
-
-                        <a href="movie.html">Подробнее</a>
-                    </article>
-
-                    <!-- Карточка фильма № 5 -->
-                    <article class="movie-card">
-                        <img src="images/movies/forrest-gump.jpg"
-                            alt="Постер фильма Форрест Гамп">
-
-                        <h3>Форрест Гамп</h3>
-                        <p>1994 · Драма, мелодрама</p>
-
-                        <a href="movie.html">Подробнее</a>
-                    </article>
-
-                    <!-- Карточка фильма № 6 -->
-                    <article class="movie-card">
-                        <img src="images/movies/matrix.jpg"
-                            alt="Постер фильма Матрица">
-
-                        <h3>Матрица</h3>
-                        <p>1999 · Фантастика, боевик</p>
-
-                        <a href="movie.html">Подробнее</a>
-                    </article>
-
-
-                                    </div>
-
-                                </div>
-                            </section>
                             <!-- Динамическая подборка сериалов из TVmaze API -->
                         <section class="api-shows">
                             <div class="container">

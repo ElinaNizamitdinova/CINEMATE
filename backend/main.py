@@ -1,19 +1,18 @@
 import os
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import jwt
 from dotenv import load_dotenv
 
-from contextlib import asynccontextmanager
-
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, EmailStr, Field
 from pwdlib import PasswordHash
 
-from database import get_connection, init_db
+from database import get_connection, connection_scope, init_db
 
 
 # Настройки безопасности
@@ -62,7 +61,7 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    with get_connection() as conn:
+    with connection_scope() as conn:
         user = conn.execute(
             "SELECT id, username, email FROM users WHERE id = ?",
             (user_id,)
@@ -147,7 +146,7 @@ def add_to_watchlist(
     request: WatchlistRequest,
     current_user = Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         item = conn.execute(
             "SELECT id FROM catalog_items WHERE id = ?",
             (request.item_id,)
@@ -182,7 +181,7 @@ def add_to_watchlist(
 
 @app.get("/api/watchlist")
 def get_watchlist(current_user = Depends(get_current_user)):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         items = conn.execute(
             """
             SELECT
@@ -209,7 +208,7 @@ def remove_from_watchlist(
     item_id: int,
     current_user = Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         result = conn.execute(
             "DELETE FROM watchlist WHERE user_id = ? AND item_id = ?",
             (current_user["id"], item_id)
@@ -231,7 +230,7 @@ def add_rating(
     request: RatingRequest,
     current_user = Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         item = conn.execute(
             "SELECT id FROM catalog_items WHERE id = ?",
             (request.item_id,)
@@ -268,7 +267,7 @@ def add_rating(
 
 @app.get("/api/ratings")
 def get_ratings(current_user = Depends(get_current_user)):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         ratings = conn.execute(
             """
             SELECT
@@ -449,7 +448,7 @@ def create_collection(
     request: CollectionRequest,
     current_user=Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         cursor = conn.execute(
             """
             INSERT INTO collections (user_id, name, description)
@@ -472,7 +471,7 @@ def create_collection(
 
 @app.get("/api/collections")
 def get_collections(current_user=Depends(get_current_user)):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         collections = conn.execute(
             """
             SELECT
@@ -499,7 +498,7 @@ def get_collection(
     collection_id: int,
     current_user=Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         collection = conn.execute(
             """
             SELECT id, name, description, created_at
@@ -548,7 +547,7 @@ def add_item_to_collection(
     request: WatchlistRequest,
     current_user=Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         collection = conn.execute(
             """
             SELECT id FROM collections
@@ -610,7 +609,7 @@ def remove_item_from_collection(
     item_id: int,
     current_user=Depends(get_current_user)
 ):
-    with get_connection() as conn:
+    with connection_scope() as conn:
         collection = conn.execute(
             """
             SELECT id FROM collections

@@ -1,213 +1,233 @@
+
 // Находим элементы управления каталогом
 const searchInput = document.querySelector("#catalog-search");
 const genreFilter = document.querySelector("#genre-filter");
 const typeFilter = document.querySelector("#type-filter");
 const sortFilter = document.querySelector("#sort-filter");
-
-// Находим контейнер с карточками
 const movieList = document.querySelector(".movie-list");
 
-// Проверяем наличие необходимых элементов
-if (searchInput && genreFilter && typeFilter && sortFilter && movieList) {
+// Изображения, которые уже есть в проекте
+const posters = {
+    "Interstellar": "interstellar.jpg",
+    "Inception": "inception.jpg",
+    "The Shawshank Redemption": "shawshank.jpg",
+    "The Green Mile": "green-mile.jpg",
+    "Forrest Gump": "forrest-gump.jpg",
+    "The Matrix": "matrix.jpg",
+    "The Dark Knight": "dark-knight.jpg",
+    "Pulp Fiction": "pulp-fiction.jpg",
+    "Fight Club": "fight-club.jpg",
+    "Breaking Bad": "breaking-bad.jpg",
+    "Sherlock": "sherlock.jpg",
+    "Stranger Things": "stranger-things.jpg",
+    "The Lord of the Rings: The Fellowship of the Ring": "lord-of-the-rings.jpg",
+    "Game of Thrones": "game-of-thrones.jpg",
+    "The Office": "the-office.jpg"
+};
 
-    // Получаем все карточки фильмов
-    const movieCards = Array.from(
-        movieList.querySelectorAll(".movie-card")
-    );
+// Сопоставление жанров базы данных со значениями фильтров
+const genreCodes = {
+    "Фантастика": "sci-fi",
+    "Фэнтези": "fantasy",
+    "Драма": "drama",
+    "Триллер": "thriller",
+    "Боевик": "action",
+    "Детектив": "detective",
+    "Криминал": "crime"
+};
 
-    // Запоминаем первоначальный порядок карточек
-    movieCards.forEach((card, index) => {
-        card.dataset.originalIndex = index;
-    });
+// Сообщение о состоянии каталога
+const catalogMessage = document.createElement("p");
+catalogMessage.className = "catalog-message";
 
-    // Сообщение, если ничего не найдено
-    const emptyMessage = document.createElement("p");
-    emptyMessage.className = "catalog-empty";
-    emptyMessage.textContent = "По вашему запросу ничего не найдено.";
-    emptyMessage.hidden = true;
+if (movieList) {
+    movieList.before(catalogMessage);
+}
 
-    movieList.after(emptyMessage);
+// Получаем кодированные жанры
+function getGenreCodes(genres) {
+    return genres
+        .split(",")
+        .map(genre => genreCodes[genre.trim()])
+        .filter(Boolean);
+}
 
-    // Основная функция обновления каталога
-    function updateCatalog() {
+// Создаём карточку фильма или сериала
+function createMovieCard(item) {
+    const card = document.createElement("article");
+    card.className = "movie-card";
 
-        const searchValue = searchInput.value.trim().toLowerCase();
-        const selectedGenre = genreFilter.value;
-        const selectedType = typeFilter.value;
-        const selectedSort = sortFilter.value;
+    const posterFile = posters[item.title];
 
-        // Проверяем каждую карточку
-        movieCards.forEach(card => {
+    const poster = posterFile
+        ? `<img src="images/movies/${posterFile}" alt="${item.title}" loading="lazy">`
+        : `<div class="poster-placeholder">Постер отсутствует</div>`;
 
-            const title = card.querySelector("h2")
-                ?.textContent.trim().toLowerCase() || "";
+    const genres = item.genres || "";
 
-            const genres = (card.dataset.genre || "").split(/\s+/);
+    card.dataset.movieId = item.id;
+    card.dataset.year = item.release_year;
+    card.dataset.genre = getGenreCodes(genres).join(" ");
+    card.dataset.type = item.item_type;
 
-            const type = card.dataset.type;
-            const matchesYear = Number(card.dataset.year);
+    card.innerHTML = `
+        ${poster}
+        <h3>${item.title}</h3>
+        <p>${item.release_year} · ${genres}</p>
+        <a href="movie.html?id=${item.id}">Подробнее</a>
+        <button class="add-to-watchlist" type="button">
+            Добавить в список
+        </button>
+    `;
 
-            const matchesSearch = title.includes(searchValue);
+    const posterImage = card.querySelector("img");
 
-            const matchesGenre =
-                selectedGenre === "all" ||
-                genres.includes(selectedGenre);
-
-            const matchesType =
-                selectedType === "all" ||
-                type === selectedType;
-
-            const isVisible =
-                matchesSearch && matchesGenre && matchesType;
-
-            card.classList.toggle("is-hidden", !isVisible);
+    if (posterImage) {
+        posterImage.addEventListener("error", () => {
+            const placeholder = document.createElement("div");
+            placeholder.className = "poster-placeholder";
+            placeholder.textContent = "Постер отсутствует";
+            posterImage.replaceWith(placeholder);
         });
-
-        // Сортируем карточки
-        const sortedCards = [...movieCards].sort((a, b) => {
-
-            const titleA = a.querySelector("h2").textContent.trim();
-            const titleB = b.querySelector("h2").textContent.trim();
-
-            const yearA = Number(a.dataset.year);
-            const yearB = Number(b.dataset.year);
-
-            switch (selectedSort) {
-
-                case "newest":
-                    return yearB - yearA;
-
-                case "oldest":
-                    return yearA - yearB;
-
-                case "title":
-                    return titleA.localeCompare(titleB, "ru");
-
-                default:
-                    return Number(a.dataset.originalIndex) -
-                           Number(b.dataset.originalIndex);
-            }
-        });
-
-        // Обновляем порядок карточек на странице
-        sortedCards.forEach(card => {
-            movieList.appendChild(card);
-        });
-
-        // Показываем сообщение, если результатов нет
-        const hasResults = movieCards.some(
-            card => !card.classList.contains("is-hidden")
-        );
-
-        emptyMessage.hidden = hasResults;
     }
-
-    // Отслеживаем изменения поисковой строки
-    searchInput.addEventListener("input", updateCatalog);
-
-    // Отслеживаем изменения фильтров
-    genreFilter.addEventListener("change", updateCatalog);
-    typeFilter.addEventListener("change", updateCatalog);
-    sortFilter.addEventListener("change", updateCatalog);
-
-    // Обновляем каталог при открытии страницы
-    updateCatalog();
-}
-// Работа со списком «Посмотреть позже»
-const WATCHLIST_KEY = "cinemateWatchlist";
-
-// Получаем сохранённые фильмы
-function getSavedMovies() {
-    try {
-        const movies = JSON.parse(
-            localStorage.getItem(WATCHLIST_KEY) || "[]"
-        );
-
-        return Array.isArray(movies) ? movies : [];
-
-    } catch (error) {
-        console.error("Ошибка чтения списка:", error);
-        return [];
-    }
-}
-
-// Обновляем состояние кнопок
-function updateWatchlistButtons() {
-
-    const savedMovies = getSavedMovies();
-
-    document.querySelectorAll(".movie-card").forEach(card => {
-
-        const button = card.querySelector(".add-to-watchlist");
-
-        if (!button) return;
-
-        const movieId = card.dataset.movieId;
-        const isSaved = savedMovies.some(
-            movie => movie.id === movieId
-        );
-
-        button.textContent = isSaved
-            ? "Уже в списке"
-            : "Добавить в список";
-
-        button.disabled = isSaved;
-    });
-}
-
-// Обрабатываем нажатия на кнопки добавления
-document.querySelectorAll(".movie-card").forEach(card => {
 
     const button = card.querySelector(".add-to-watchlist");
 
-    if (!button) return;
-
-    button.addEventListener("click", function () {
-
-        const savedMovies = getSavedMovies();
-
-        const movie = {
-            id: card.dataset.movieId,
-            title: card.querySelector("h2").textContent.trim(),
-            year: card.dataset.year,
-            genre: card.querySelector("p").textContent
-                .split("·").slice(1).join("·").trim(),
-            image: card.querySelector("img").getAttribute("src")
-        };
-
-        // Проверяем, не добавлен ли фильм ранее
-        if (savedMovies.some(item => item.id === movie.id)) {
-            button.textContent = "Уже в списке";
-            button.disabled = true;
+    button.addEventListener("click", async () => {
+        if (!window.CinemateAPI.isAuthenticated()) {
+            alert("Для добавления в список просмотра необходимо войти в аккаунт.");
             return;
         }
 
-        // Добавляем фильм в список
-        savedMovies.push(movie);
+        button.disabled = true;
 
         try {
-            localStorage.setItem(
-                WATCHLIST_KEY,
-                JSON.stringify(savedMovies)
-            );
+            await window.CinemateAPI.request("/watchlist", {
+                method: "POST",
+                body: JSON.stringify({
+                    item_id: item.id
+                })
+            });
 
-            button.textContent = "Добавлено в список";
-            button.disabled = true;
-
+            button.textContent = "Уже в списке";
         } catch (error) {
-            console.error("Не удалось сохранить фильм:", error);
-            button.textContent = "Ошибка сохранения";
+            alert(error.message);
+            button.disabled = false;
         }
     });
-});
 
-// Проверяем состояние кнопок при открытии каталога
-updateWatchlistButtons();
-// Предотвращаем стандартную отправку формы фильтрации
+    return card;
+}
+
+// Фильтрация и сортировка карточек
+function updateCatalog() {
+    const searchValue = searchInput.value.trim().toLowerCase();
+    const selectedGenre = genreFilter.value;
+    const selectedType = typeFilter.value;
+    const selectedSort = sortFilter.value;
+
+    const cards = Array.from(
+        movieList.querySelectorAll(".movie-card")
+    );
+
+    cards.forEach(card => {
+        const title = card.querySelector("h3").textContent.toLowerCase();
+        const genres = (card.dataset.genre || "").split(" ");
+        const type = card.dataset.type;
+
+        const matchesSearch = title.includes(searchValue);
+        const matchesGenre =
+            selectedGenre === "all" || genres.includes(selectedGenre);
+        const matchesType =
+            selectedType === "all" || type === selectedType;
+
+        card.classList.toggle(
+            "is-hidden",
+            !(matchesSearch && matchesGenre && matchesType)
+        );
+    });
+
+    const sortedCards = [...cards].sort((a, b) => {
+        const titleA = a.querySelector("h3").textContent;
+        const titleB = b.querySelector("h3").textContent;
+        const yearA = Number(a.dataset.year);
+        const yearB = Number(b.dataset.year);
+
+        switch (selectedSort) {
+            case "newest":
+                return yearB - yearA;
+            case "oldest":
+                return yearA - yearB;
+            case "title":
+                return titleA.localeCompare(titleB, "ru");
+            default:
+                return 0;
+        }
+    });
+
+    sortedCards.forEach(card => movieList.appendChild(card));
+
+    const hasResults = cards.some(
+        card => !card.classList.contains("is-hidden")
+    );
+
+    emptyMessage.hidden = hasResults;
+}
+
+// Сообщение, если ничего не найдено
+const emptyMessage = document.createElement("p");
+emptyMessage.className = "catalog-empty";
+emptyMessage.textContent = "По вашему запросу ничего не найдено.";
+emptyMessage.hidden = true;
+
+// Загружаем каталог с собственного сервера
+async function loadCatalog() {
+    if (!movieList) return;
+
+    catalogMessage.textContent = "Загружаем каталог...";
+
+    try {
+        const items = await window.CinemateAPI.request("/catalog");
+
+        movieList.innerHTML = "";
+
+        items.forEach(item => {
+            movieList.appendChild(createMovieCard(item));
+        });
+
+        movieList.after(emptyMessage);
+
+        catalogMessage.textContent = `Загружено записей: ${items.length}`;
+
+        searchInput.addEventListener("input", updateCatalog);
+        genreFilter.addEventListener("change", updateCatalog);
+        typeFilter.addEventListener("change", updateCatalog);
+        sortFilter.addEventListener("change", updateCatalog);
+
+        updateCatalog();
+
+    } catch (error) {
+        catalogMessage.textContent =
+            `Не удалось загрузить каталог: ${error.message}`;
+    }
+}
+
+// Отменяем стандартную отправку формы фильтров
 const catalogFilterForm = document.querySelector("#catalog-filter-form");
 
 if (catalogFilterForm) {
-    catalogFilterForm.addEventListener("submit", function (event) {
+    catalogFilterForm.addEventListener("submit", event => {
         event.preventDefault();
     });
+}
+
+// Запускаем загрузку
+if (
+    movieList &&
+    searchInput &&
+    genreFilter &&
+    typeFilter &&
+    sortFilter
+) {
+    loadCatalog();
 }

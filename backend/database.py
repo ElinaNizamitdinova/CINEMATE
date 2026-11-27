@@ -1,4 +1,5 @@
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -19,12 +20,26 @@ def get_connection():
 
     return connection
 
+# Управление подключением с автоматическим закрытием
+@contextmanager
+def connection_scope():
+    connection = get_connection()
+
+    try:
+        yield connection
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
+
 
 # Создание таблиц базы данных
 def init_db():
 
     connection = get_connection()
-
+    
     try:
 
         connection.executescript("""
